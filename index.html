@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <link rel="icon" type="image/png" href="favicon.png" />
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FalcoDigi Works — Dashboard</title>
+  <link rel="stylesheet" href="style.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600;700&family=Jost:wght@300;400;500;600&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <!-- ═══════════════════════════════ LOGIN SCREEN ═══════════════════════════════ -->
+  <div id="loginScreen" class="screen">
+    <div class="login-bg-decor"></div>
+    <div class="login-card">
+      <div class="login-logo-wrap">
+        <img src="logo.png" alt="FalcoDigi Logo" class="login-logo" onerror="this.style.display='none'; document.getElementById('logoFallback').style.display='flex';" />
+        <div id="logoFallback" class="logo-fallback">FD</div>
+      </div>
+      <h1 class="login-title">FalcoDigi Works</h1>
+      <p class="login-subtitle">Client Management Dashboard</p>
+      <div class="login-divider"><span></span><span class="divider-diamond">◆</span><span></span></div>
+
+      <div class="form-group">
+        <label for="loginId">Agent ID</label>
+        <input type="text" id="loginId" placeholder="Enter your ID" autocomplete="off" />
+      </div>
+      <div class="form-group">
+        <label for="loginPass">Password</label>
+        <input type="password" id="loginPass" placeholder="Enter your password" />
+      </div>
+
+      <div id="loginError" class="login-error hidden">Invalid credentials. Please try again.</div>
+
+      <button class="btn-gold btn-full" onclick="handleLogin()">Sign In</button>
+      <p class="login-footer">Secure access · FalcoDigi Works © 2025</p>
+    </div>
+  </div>
+
+  <!-- ═══════════════════════════════ DASHBOARD SCREEN ═══════════════════════════════ -->
+  <div id="dashboardScreen" class="screen hidden">
+
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="sidebar-logo">
+        <img src="logo.png" alt="Logo" class="s-logo" onerror="this.style.display='none'; document.getElementById('sLogoFb').style.display='flex';" />
+        <div id="sLogoFb" class="logo-fallback small">FD</div>
+      </div>
+      <nav class="sidebar-nav">
+        <a href="#" class="nav-item active" onclick="showSection('overview', this)">
+          <span class="nav-icon">◈</span> Overview
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('addClient', this)">
+          <span class="nav-icon">✦</span> Add Client
+        </a>
+        <a href="#" class="nav-item" onclick="showSection('clients', this)">
+          <span class="nav-icon">◉</span> Clients
+        </a>
+      </nav>
+      <button class="logout-btn" onclick="handleLogout()">⎋ Logout</button>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+
+      <!-- Header -->
+      <header class="dash-header">
+        <div>
+          <h2 class="welcome-text">Welcome back, <span id="welcomeName"></span></h2>
+          <p class="welcome-sub" id="todayDate"></p>
+        </div>
+        <div class="header-search">
+          <input type="text" id="searchInput" placeholder="🔍  Search clients…" oninput="filterClients()" />
+        </div>
+      </header>
+
+      <!-- ── OVERVIEW SECTION ── -->
+      <section id="section-overview" class="dash-section active">
+        <div class="summary-cards">
+          <div class="card stat-card">
+            <div class="stat-icon">👥</div>
+            <div class="stat-info">
+              <span class="stat-num" id="totalClients">0</span>
+              <span class="stat-label">Total Clients</span>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">🔔</div>
+            <div class="stat-info">
+              <span class="stat-num" id="pendingFollowups">0</span>
+              <span class="stat-label">Pending Follow-ups</span>
+            </div>
+          </div>
+          <div class="card stat-card">
+            <div class="stat-icon">⚙️</div>
+            <div class="stat-info">
+              <span class="stat-num" id="ongoingWork">0</span>
+              <span class="stat-label">Ongoing Work</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick client preview -->
+        <div class="card section-card">
+          <div class="section-card-header">
+            <h3>Recent Clients</h3>
+            <button class="btn-ghost" onclick="showSection('clients', document.querySelector('.nav-item:nth-child(3)'))">View All →</button>
+          </div>
+          <div id="recentClients" class="recent-list"></div>
+        </div>
+      </section>
+
+      <!-- ── ADD CLIENT SECTION ── -->
+      <section id="section-addClient" class="dash-section hidden">
+        <div class="card section-card form-card">
+          <div class="section-card-header">
+            <h3>Add New Client</h3>
+          </div>
+          <div class="client-form">
+            <div class="form-row">
+              <div class="form-group">
+                <label>Client Name</label>
+                <input type="text" id="clientName" placeholder="Full name" />
+              </div>
+              <div class="form-group">
+                <label>Phone Number</label>
+                <input type="tel" id="clientPhone" placeholder="+91 XXXXX XXXXX" />
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Status</label>
+                <select id="clientStatus">
+                  <option value="">Select Status</option>
+                  <option>New Lead</option>
+                  <option>Contacted</option>
+                  <option>Interested</option>
+                  <option>Converted</option>
+                  <option>Not Interested</option>
+                </select>
+              </div>
+              <div class="form-group">
+                <label>Priority</label>
+                <select id="clientPriority">
+                  <option value="">Select Priority</option>
+                  <option>High</option>
+                  <option>Medium</option>
+                  <option>Low</option>
+                </select>
+              </div>
+            </div>
+            <div class="form-row">
+              <div class="form-group">
+                <label>Follow-up Date</label>
+                <input type="date" id="clientFollowup" />
+              </div>
+              <div class="form-group">
+                <label>Notes</label>
+                <input type="text" id="clientNotes" placeholder="Optional notes…" />
+              </div>
+            </div>
+            <div id="formError" class="login-error hidden">Please fill all required fields.</div>
+            <button class="btn-gold" onclick="addClient()">✦ Add Client</button>
+          </div>
+        </div>
+      </section>
+
+      <!-- ── CLIENTS LIST SECTION ── -->
+      <section id="section-clients" class="dash-section hidden">
+        <div class="card section-card">
+          <div class="section-card-header">
+            <h3>All Clients</h3>
+            <span id="clientCount" class="badge">0</span>
+          </div>
+          <div class="table-wrap">
+            <table class="clients-table">
+              <thead>
+                <tr>
+                  <th>Name</th>
+                  <th>Phone</th>
+                  <th>Status</th>
+                  <th>Follow-up</th>
+                  <th>Priority</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody id="clientTableBody"></tbody>
+            </table>
+            <div id="emptyState" class="empty-state hidden">
+              <span>◈</span>
+              <p>No clients yet. Add your first client!</p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+    </main>
+  </div>
+
+  <!-- ═══════════════ EDIT MODAL ═══════════════ -->
+  <div id="editModal" class="modal-overlay hidden">
+    <div class="modal-card">
+      <h3 class="modal-title">Edit Client</h3>
+      <input type="hidden" id="editIndex" />
+      <div class="form-row">
+        <div class="form-group">
+          <label>Client Name</label>
+          <input type="text" id="editName" />
+        </div>
+        <div class="form-group">
+          <label>Phone Number</label>
+          <input type="tel" id="editPhone" />
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Status</label>
+          <select id="editStatus">
+            <option>New Lead</option>
+            <option>Contacted</option>
+            <option>Interested</option>
+            <option>Converted</option>
+            <option>Not Interested</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label>Priority</label>
+          <select id="editPriority">
+            <option>High</option>
+            <option>Medium</option>
+            <option>Low</option>
+          </select>
+        </div>
+      </div>
+      <div class="form-row">
+        <div class="form-group">
+          <label>Follow-up Date</label>
+          <input type="date" id="editFollowup" />
+        </div>
+        <div class="form-group">
+          <label>Notes</label>
+          <input type="text" id="editNotes" />
+        </div>
+      </div>
+      <div class="modal-actions">
+        <button class="btn-ghost" onclick="closeModal()">Cancel</button>
+        <button class="btn-gold" onclick="saveEdit()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
